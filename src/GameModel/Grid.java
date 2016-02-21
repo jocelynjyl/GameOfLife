@@ -1,7 +1,10 @@
 package GameModel;
 
-public class Grid
-{
+/*  2D array of Cell objects that represent the game board
+    invariant: length of each row must be identical, and length of each column must be identical
+ */
+
+public class Grid {
 	private Cell [][] grid;
     private int rows;
     private int columns;
@@ -9,10 +12,9 @@ public class Grid
     private int liveCells = 0;
     private Cell[][] next;
 
-    // initializes a new grid with given columns and rows.
-    // creates a new cell in each position
-    public Grid (int rows, int columns)
-	{
+    // Constructor: initializes a new Grid with specified columns and rows.
+    //EFFECTS: creates a new Cell in each position in the Grid
+    public Grid (int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
 		grid = new Cell [rows][columns];
@@ -26,12 +28,6 @@ public class Grid
 		
 	}
 
-	public void setInitial (int row, int column)
-	{
-
-        grid[row][column].setLive();
-	}
-
     public int getRows() {
         return rows;
     }
@@ -40,12 +36,16 @@ public class Grid
         return columns;
     }
 
-    public Cell getCell(int row, int column){
-        return grid[row][column];
-    }
+    // MODIFIES: this
+    // EFFECTS: sets Cell at given row and column to be alive.
+    public void setInitial (int row, int column) {
+        grid[row][column].setLive();
+	}
 
-	public void nextGeneration ()
-	{
+    //MODIFIES: this
+    //EFFECTS: checks every Cell in the Grid and sets them to the next state as outlined by Game of Life rules.
+    //         Add 1 to the generation counter.
+	public void nextGeneration () {
         next = new Cell[getRows()][getColumns()];
         for (int i = 0; i< this.rows; i++) {
             for (int j = 0; j< this.columns; j++){
@@ -57,10 +57,9 @@ public class Grid
 		generation++;
 	}
 	
-	
-	public void printGame ()
-	{//top left corner is (0,0)
-		System.out.println ("Generation: "+generation);
+	//EFFECTS: prints every Cell in the Grid to the console
+	public void printGame () {
+        System.out.println ("Generation: "+generation);
 		for (int numRow =0; numRow < rows; numRow++)
 		{
 			for (int numColumn = 0; numColumn < columns; numColumn++)
@@ -71,11 +70,17 @@ public class Grid
 		}
 		
 	}
-    public Cell getNextState(Cell[][] board, int row, int column)
-    {
+
+    /* EFFECTS: Returns the state of a Cell at given row and column in the next generation based on the following:
+                If a live Cell is surrounded by less than 2 live Cells, it dies from underpopulation.
+                If a live Cell is surrounded by more than 3 live Cells, it dies from overpopulation.
+                If a live Cell is surrounded by 2 or 3 live Cells, it survives.
+                If a dead Cell is surrounded by 3 live Cells, it becomes alive from reproduction.
+    */
+    public Cell getNextState(Cell[][] board, int row, int column) {
         countSurroundingCells(board, row, column);
         Cell nextCell = new Cell();
-        //rules for figuring out state of cell
+
         if ((liveCells <2 || liveCells >3) && board[row][column].getCurrentState())
         {
             nextCell.setDead();
@@ -92,6 +97,8 @@ public class Grid
         return nextCell;
 
     }
+
+    // EFFECTS: returns the number of live Cells adjoining a Cell at given row and column.
     private int countSurroundingCells(Cell[][] board, int row, int column) {
         for (NeighborCell neighbor: NeighborCell.values()){
             if (NeighborCell.getNeighborCellState(neighbor, board, row, column)){

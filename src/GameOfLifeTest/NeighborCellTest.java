@@ -1,5 +1,3 @@
-package GameOfLifeTest;
-
 import GameModel.Grid;
 import org.junit.Before;
 

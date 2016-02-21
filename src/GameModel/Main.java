@@ -1,7 +1,7 @@
 package GameModel;
 
-import java.util.ArrayList;
-import java.util.List;
+/* Demo of a simple Blinker (period 2) in the Game of Life
+ */
 
 public class Main
 {
